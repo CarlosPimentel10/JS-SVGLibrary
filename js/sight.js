@@ -2,10 +2,30 @@
 class SVGElement {
     
 
-    constructor(type, namespace, node){
+    constructor(type){
         this.type = type;
         this.namespace = 'http://www.w3.org/2000/svg';
+        this.node = document.createElementNS(this.type, this.namespace);
+        return this;
+    }
+    attr(attrs){
+        for(const [key, value] of Object.entries(attrs)){
+            this.node.setAttributeNS(null, key, value);
+        }
+        return this;
+    }
+    append(element){
+       const parent = (typeof element === 'String') ? document.querySelector(element) : element.node;
+       parent.appendChild(this.node);
+    }
+}
 
-        this.node = document.createElementNS();
+class Sight{
+
+    constructor(selector, width, height){
+        this.svg = new SVG('svg').attr({viewbox: `0 0 ${width} ${height}`}).append(selector);
+    }
+    draw(type, attrs){
+        return new SVGElement(type).attr(attrs).append(this.svg);
     }
 }
